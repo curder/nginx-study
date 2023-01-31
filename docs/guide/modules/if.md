@@ -168,7 +168,10 @@ if ( $host ~* www\.(.*) ) {
 set $variable value;
 ```
 
-为了配置 if 指令的条件判断，需要用到 <!--@include: ../../snippets/var-index.md -->
+
+<!--@include: ../../snippets/var-index.md -->
+
+[可以通过查看nginx 中内置的全局变量文档](http://nginx.org/en/docs/varindex.html)获得更多详情。
 
 ## 举例
 
@@ -245,13 +248,13 @@ nginx 的配置中不支持 if 条件的逻辑与／逻辑或运算 ，并且不
 
   ::: code-group
 
-    ``` 正则表达式
+    ```nginx [正则表达式]
     if ($remote_ip !~ "^(114|8)\.(114|8)\.(114|8)\.(114|8)$") {
         return 405;
     }
     ```
 
-    ``` 定义变量
+    ```nginx [定义变量]
     set $allow_ip 0;
 
     if ($remote_addr = 114.114.114.114) {
@@ -271,7 +274,7 @@ nginx 的配置中不支持 if 条件的逻辑与／逻辑或运算 ，并且不
 
 - `and` 并且
   :::code-group
-  ``` 使用数值类型
+  ```nginx [使用数值类型]
   set $and 1;
 
   if (<not condition>) {
@@ -287,7 +290,7 @@ nginx 的配置中不支持 if 条件的逻辑与／逻辑或运算 ，并且不
   }
   ```
 
-  ``` 使用字符串类型
+  ```nginx [使用字符串类型]
   set $and ""
 
   if (<condition>) {
