@@ -31,9 +31,7 @@ if (condition) {
 
 并且 if 指令不支持多条件、不支持嵌套且不支持 else。
 
-## if 关键字
-
-### [break](http://nginx.org/r/break)
+## [break 指令](http://nginx.org/r/break)
 
 遇到 `break` 则跳出，后面的指令不在执行，比如：
 
@@ -45,7 +43,7 @@ if (!-f $reque_filename) {
 }
 ```
 
-### [return](http://nginx.org/r/return)
+## [return 指令](http://nginx.org/r/return)
 
 完成对请求的处理，直接向客户端返回响应状态码。比如：
 ::: code-group
@@ -88,13 +86,81 @@ return $scheme://www.example.com$request_uri;
 `return` 指令使用简单，适用于重定向满足条件的情况，重写的 URL 适用于匹配 server 或 location 块的每个请求，并且可以使用标准
 [NGINX 变量](http://nginx.org/en/docs/varindex.html)构建重写的 URL。
 
-### [rewrite](http://nginx.org/r/rewrite)
+## [rewrite 指令](http://nginx.org/r/rewrite)
 
 
+```nginx
+rewrite regex replacement [flag];
+```
 
+rewrite 指令使用指定的正则表达式 `regex` 来匹配请求的 URI，如果匹配成功，则使用 `replacement` 更改URI，指令会根据配置文件中的顺序来执行。
 
+同时可以使用 flag 标识来终止指令的进一步处理。
 
-### [set](https://nginx.org/r/set)
+如果替换字符串 replacement 以 `http://`、`https://` 或 `$scheme` 开头，则停止处理后续内容并直接重定向返回给客户端。
+
+::: code-group
+```nginx [重写字符串以http://开头]
+location / {
+    # 当匹配 正则表达式 /test/(.*)时 请求将被临时重定向到 http://www.$1.com
+    # 相当于 flag 写为 redirect
+    rewrite /test/(.*) http://www.$1.com;
+    return 200 "ok";
+}
+# 在浏览器中输入 127.0.0.1:8080/test1/baidu 
+# 则临时重定向到 http://www.baidu.com
+# 后面的 return 指令将没有机会执行了
+```
+
+```nginx [重写字符串不以http://开头]
+location / {
+    rewrite /test/(.*) www.$1.com;
+    return 200 "ok";
+}
+# 发送请求如下
+# curl 127.0.0.1:8080/test1/baidu
+# ok
+
+# 此处没有带 http:// 所以只是简单的重写。请求的 uri 由 /test1/baidu 重写为 www.baidu.com
+# 因为会顺序执行 rewrite 指令，所以下一步执行 return 指令响应了 ok 字符串
+```
+:::
+
+注意重写表达式只对相对路径有效。如果需要配对主机名，应该使用 if 语句，示例如下：
+
+```nginx
+if ( $host ~* www\.(.*) ) {
+    set      $host_without_www $1;
+    rewrite  ^(.*)$  $scheme://$host_without_www$1 permanent;
+}
+```
+
+### 执行顺序
+
+1. 执行 server 块的 rewrite 指令
+
+2. 执行 location 匹配
+
+3. 执行选定的 location 中的 rewrite 指令
+
+如果其中某步中的 URI 被重写，则重新循环执行 1 - 3，直到找到真实存在的文件，如果循环超过10次，则返回 **500 Internal Server Error** 错误。
+
+### flag 标识
+
+- `last`： 相当于Apache的[L]标记，表示完成 `rewrite`
+
+- `break`： 停止执行当前虚拟主机的后续 `rewrite` 指令集
+
+- `redirect`： 返回302临时重定向，地址栏会显示跳转后的地址
+
+- `permanent`： 返回301永久重定向，地址栏会显示跳转后的地址
+
+> **`last` 和 `break` 的区别**
+> - `last` 一般写在 server 代码段和 if 条件判断中，而 `break` 一般使用在 location 中;
+> - `last` 不终止重写后的 url 匹配，即新的 url 会再从 server 走一遍匹配流程，而 `break` 终止重写后的匹配;
+> - `break` 和 `last` 都能组织继续执行后面的 `rewrite` 指令;
+
+## [set 指令](https://nginx.org/r/set)
 
 设置变量，语法如下：
 
