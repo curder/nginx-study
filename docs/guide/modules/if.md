@@ -180,6 +180,14 @@ if (!-f $request_filename) {
 }
 ```
 
+### 当访问的文件和目录不存在时，重定向到某个php文件
+
+```nginx
+if( !-e $request_filename ) {
+    rewrite ^/(.*)$ index.php last;
+}
+```
+
 ### 如果主机不是 example.com 则跳转到 example.com
 
 ```
@@ -201,6 +209,25 @@ if ($request_method = POST) {
 ```
 if ($args ~ a=1) {
     rewrite ^ http://example.com/ permanent;
+}
+```
+
+### 禁止访问以`.sh`,`.flv`,`.mp3`为后缀名的文件
+
+```nginx
+location ~ .*\.(sh|flv|mp3)$ {
+    return 403;
+}
+```
+
+### 禁止访问多个目录
+
+禁止访问 cron 和 templates 开头的目录。
+
+```nginx
+location ~ ^/(cron|templates)/ {
+    deny all;
+    break;
 }
 ```
 
