@@ -14,26 +14,26 @@ if (condition) {
 
 其中 condition 条件语法可以包括如下：
 
-**文件及目录匹配**
+- **文件及目录匹配**
 
-- 使用 `=` 或者 `!=` 直接比较变量内容，**注意不是 `==`**
-- 使用 `-f` 和 `!-f` 判断文件是否存在
-- 使用 `-d` 和 `!-d` 判断目录是否存在
-- 使用 `-e` 和 `!-e` 判断文件或目录是否存在
-- 使用 `-x` 和 `!-x` 用来判断文件是否可执行
+    - 使用 `=` 或者 `!=` 直接比较变量内容，**注意不是 `==`**
+    - 使用 `-f` 和 `!-f` 判断文件是否存在
+    - 使用 `-d` 和 `!-d` 判断目录是否存在
+    - 使用 `-e` 和 `!-e` 判断文件或目录是否存在
+    - 使用 `-x` 和 `!-x` 用来判断文件是否可执行
 
-**正则匹配**
+- **正则匹配**
 
-- `~` 区分大小写匹配指定正则表达式，当匹配时返回"真"
-- `~*` 不区分大小写匹配指定正则表达式，当匹配时返回"真"
-- `!~` 区分大小写匹配指定正则表达式，当不匹配时候返回"真"
-- `!~*` 不区分大小写匹配指定正则表达式，当不匹配时候返回"真"
+    - `~` 区分大小写匹配指定正则表达式，当匹配时返回"真"
+    - `~*` 不区分大小写匹配指定正则表达式，当匹配时返回"真"
+    - `!~` 区分大小写匹配指定正则表达式，当不匹配时候返回"真"
+    - `!~*` 不区分大小写匹配指定正则表达式，当不匹配时候返回"真"
 
 并且 if 指令不支持多条件、不支持嵌套且不支持 else。
 
 ## if 关键字
 
-### [break](http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#break)
+### [break](http://nginx.org/r/break)
 
 遇到 `break` 则跳出，后面的指令不在执行，比如：
 
@@ -45,19 +45,37 @@ if (!-f $reque_filename) {
 }
 ```
 
-### [rewrite](http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite)
-
-// TODO
-
-### [return](http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#return)
+### [return](http://nginx.org/r/return)
 
 完成对请求的处理，直接向客户端返回响应状态码。比如：
+::: code-group
 
-```
+```nginx [返回状态码和文本]
+# 格式如下：
 return code [text];
-return code URL;
-return URL;
+
+# 示例1：直接返回状态码
+return 403;
+# 示例2：拒绝没有有效身份验证令牌的请求时
+return 401 "Access denied because token is expired or invalid";
 ```
+
+```nginx [返回状态码和URL]
+# 格式如下： 
+return code URL;
+
+# 示例：重定向
+return 301 $scheme://www.example.com$request_uri;
+```
+
+```nginx [返回URL]
+# 格式如下：
+return URL;
+
+# 示例：重定向
+return $scheme://www.example.com$request_uri;
+```
+:::
 
 参数解释如下：
 
@@ -67,7 +85,16 @@ return URL;
 | URL  | 返回给客户端的 URL 地址     |
 | text | 返回给客户端的响应体内容，支持变量。 |
 
-### set
+`return` 指令使用简单，适用于重定向满足条件的情况，重写的 URL 适用于匹配 server 或 location 块的每个请求，并且可以使用标准
+[NGINX 变量](http://nginx.org/en/docs/varindex.html)构建重写的 URL。
+
+### [rewrite](http://nginx.org/r/rewrite)
+
+
+
+
+
+### [set](https://nginx.org/r/set)
 
 设置变量，语法如下：
 
@@ -166,7 +193,7 @@ nginx 的配置中不支持 if 条件的逻辑与／逻辑或运算 ，并且不
     # ...
   }
   ```
-  
+
   ``` 使用字符串类型
   set $and ""
 
