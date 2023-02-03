@@ -38,5 +38,6 @@ export default defineConfig({
 function nav() {
     return [
         {text: '安装', link: '/guide/install', activeMatch: '/guide/install'},
+        {text: "示例", link: "/guide/examples", activeMatch: '/guide/examples'}
     ];
 }
