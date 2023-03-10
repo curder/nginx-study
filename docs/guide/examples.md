@@ -50,6 +50,18 @@ location ~ .(aspx|php|jsp|cgi)$ {
 ```
 它相对于 404 响应代码的优势在于它明确指示资源永久不可用，因此客户端不会再次发送请求。
 
+## 禁止访问站点某些前缀
+
+在站点需要迁移的时候，站点对应的后台不想让用户对数据进行编辑，可以通过配置 Nginx 禁止访问站点的某些后台前缀。
+
+```nginx
+location ~* /admin {
+    return 403;
+}
+```
+
+这样配置的话，再访问前缀为 `/admin` 就会返回 403；
+
 ## 配置自定义重新路由
 
 现在通过重新配置自定义的路由，URL `http://mysite.com/list/123` 用户友好的被重写为由`list.html` 控制器处理的 URL `http://mysite.com/list.html?arg=123`
