@@ -16,7 +16,7 @@ brew install nginx
 - 默认主配置文件：`/usr/local/etc/nginx/nginx.conf`
 - 日志文件： `/usr/local/var/log/nginx/`
 - 默认文档目录： `/usr/local/var/www/`
-- 默认监听本地地址： http://localhost:8080
+- 默认监听本地地址： `http://localhost:8080`
 
 > 如果 MacOS 系统为 M1 架构，其中路径前缀为：`/opt/homebrew/`
 
@@ -39,7 +39,7 @@ sudo systemctl enable nginx
 - 默认主配置文件：`/etc/nginx/nginx.conf`
 - 日志文件： `/etc/nginx/logs/`
 - 默认文档目录： `/etc/nginx/html/`
-- 默认监听本地地址： http://localhost
+- 默认监听本地地址： `http://localhost`
 
 ## Ubuntu
 
@@ -61,4 +61,4 @@ systemctl enable nginx
 - 默认主配置文件：`/etc/nginx/nginx.conf`
 - 日志文件： `/var/log/nginx/`
 - 默认文档目录： `/etc/nginx/html/`
-- 默认监听本地地址： http://localhost
+- 默认监听本地地址： `http://localhost`
