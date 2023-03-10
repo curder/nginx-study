@@ -1,1 +1,0 @@
-import{_ as e,c as a,o as t,a as i}from"./app.5b77a735.js";const m=JSON.parse('{"title":"Nginx 学习","description":"","frontmatter":{},"headers":[],"relativePath":"index.md","lastUpdated":1675073293000}'),n={name:"index.md"},d=i("",2),r=[d];function s(_,l,o,c,h,u){return t(),a("div",null,r)}const p=e(n,[["render",s]]);export{m as __pageData,p as default};
