@@ -7,7 +7,7 @@ export default defineConfig({
     description: "Nginx 学习记录",
     lastUpdated: true,
     head: [
-        ['link', {rel: 'icon', href: '/nginx/images/favicon.ico'}],
+        ['link', {rel: 'icon', href: '/nginx-study/images/favicon.ico'}],
     ],
     themeConfig: {
         logo: "/images/logo.svg",
@@ -24,11 +24,11 @@ export default defineConfig({
             next: '下一页'
         },
         editLink: {
-            pattern: "https://github.com/curder/nginx/edit/master/docs/:path",
+            pattern: "https://github.com/curder/nginx-study/edit/master/docs/:path",
             text: '编辑它'
         },
         socialLinks: [
-            {icon: 'github', link: 'https://github.com/curder/nginx'}
+            {icon: 'github', link: 'https://github.com/curder/nginx-study'}
         ],
         nav: nav(),
         sidebar: {}
