@@ -2,8 +2,9 @@
 
 ## 添加或删除 `www` 子域名
 
-```nginx
-# add 'www'
+::: code-group
+
+```nginx [添加 www 子域名]
 server {
     listen 80;
     listen 443 ssl;
@@ -13,8 +14,9 @@ server {
 
 # 不推荐使用 rewrite
 rewrite ^(.*)$ $scheme://www.domain.com$1 permanent;
+```
 
-# remove 'www'
+```nginx [删除 www 子域名]
 server {
     listen 80;
     listen 443 ssl;
@@ -23,9 +25,11 @@ server {
 }
 ```
 
+:::
+
 ## 强制所有请求使用 SSL/TLS
 
-此server块强制所有访问者使用安全 (SSL/TLS) 连接到站点。
+此 server 块强制所有访问者使用安全 (SSL/TLS) 连接到站点。
 
 ```nginx
 server {
@@ -41,6 +45,7 @@ if ($scheme != "https") {
 ```
 
 ## 禁止对不支持的文件扩展名的请求
+
 由于各种原因，站点可能会收到以与未运行的应用程序服务器相对应的文件扩展名结尾的请求 URL，而服务器处理的文件类型的请求无法得到服务，需要被拒绝。
 
 ```nginx
@@ -69,4 +74,3 @@ location ~* /admin {
 ```nginx
 rewrite ^/list/(.*)$ /list.html?arg=$1 last;
 ```
-
