@@ -84,3 +84,24 @@ rewrite ^/uploads/images/(.*)$ /uploads/$1 last;
 ```
 
 这样配置后，在访问 `http://mysite.com/uploads/images/exmaple.png` 也能访问 `/uploads/example.png` 文件。
+
+## 图片缺失时使用默认图片
+
+当一些原因导致图片无法访问，可以临时使用一张默认图片作为展示。
+
+比如文章封面或文章内容图，`https://mysite.com/storage/uploads/images/xx.png` 或者 `https://mysite.com/storage/posts/cover/images/xx.png` 无法访问，当出现上面的图片地址无法访问时展示一张默认的图片。
+
+可以使用 nginx 提供的 [`try_files` 指令](http://nginx.org/en/docs/http/ngx_http_core_module.html#try_files)
+
+**注意：默认图片必须可以访问。**
+
+```nginx
+# 假定默认的图片存放在项目 /images/default.jpg
+location *~ storage\/(uploads|posts\/cover)\/images { # 正则匹配url前缀
+       root /var/www/codes/{PROJECT_NAME}; # 这里编写项目根目录
+       try_files $uri /images/default.jpg; # 这里提供默认文件
+}
+location = /images/default.jpg {
+    expires 30s;
+}
+```
