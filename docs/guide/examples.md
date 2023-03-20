@@ -74,3 +74,13 @@ location ~* /admin {
 ```nginx
 rewrite ^/list/(.*)$ /list.html?arg=$1 last;
 ```
+
+## 修复失败图片路径
+
+在迁移项目时会出现一些图片不在原来的图片位置。比如访问URL `http://mysite.com/uploads/images/example.png` 图片`example.png` 实际所在路径是 `/uploads/example.png`，此时可以通过 `rewrite` 对路径进行重写：
+
+```nginx
+rewrite ^/uploads/images/(.*)$ /uploads/$1 last;
+```
+
+这样配置后，在访问 `http://mysite.com/uploads/images/exmaple.png` 也能访问 `/uploads/example.png` 文件。
