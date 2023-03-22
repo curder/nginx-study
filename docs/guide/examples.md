@@ -97,7 +97,7 @@ rewrite ^/uploads/images/(.*)$ /uploads/$1 last;
 
 ```nginx
 # 假定默认的图片存放在项目 /images/default.jpg
-location *~ storage\/(uploads|posts\/cover)\/images { # 正则匹配url前缀
+location ~* storage\/(uploads|posts\/cover)\/images { # 正则匹配url前缀
        root /var/www/codes/{PROJECT_NAME}; # 这里编写项目根目录
        try_files $uri /images/default.jpg; # 这里提供默认文件
 }
