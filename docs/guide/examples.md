@@ -102,6 +102,6 @@ location *~ storage\/(uploads|posts\/cover)\/images { # 正则匹配url前缀
        try_files $uri /images/default.jpg; # 这里提供默认文件
 }
 location = /images/default.jpg {
-    expires 30s;
+    expires max;
 }
 ```
