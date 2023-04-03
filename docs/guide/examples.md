@@ -53,6 +53,7 @@ location ~ .(aspx|php|jsp|cgi)$ {
     return 410;
 }
 ```
+
 它相对于 404 响应代码的优势在于它明确指示资源永久不可用，因此客户端不会再次发送请求。
 
 ## 禁止访问站点某些前缀
@@ -69,7 +70,8 @@ location ~* /admin {
 
 ## 配置自定义重新路由
 
-现在通过重新配置自定义的路由，URL `http://mysite.com/list/123` 用户友好的被重写为由`list.html` 控制器处理的 URL `http://mysite.com/list.html?arg=123`
+现在通过重新配置自定义的路由，URL `http://mysite.com/list/123` 用户友好的被重写为由`list.html` 控制器处理的
+URL `http://mysite.com/list.html?arg=123`
 
 ```nginx
 rewrite ^/list/(.*)$ /list.html?arg=$1 last;
@@ -77,7 +79,8 @@ rewrite ^/list/(.*)$ /list.html?arg=$1 last;
 
 ## 修复失败图片路径
 
-在迁移项目时会出现一些图片不在原来的图片位置。比如访问URL `http://mysite.com/uploads/images/example.png` 图片`example.png` 实际所在路径是 `/uploads/example.png`，此时可以通过 `rewrite` 对路径进行重写：
+在迁移项目时会出现一些图片不在原来的图片位置。比如访问URL `http://mysite.com/uploads/images/example.png`
+图片`example.png` 实际所在路径是 `/uploads/example.png`，此时可以通过 `rewrite` 对路径进行重写：
 
 ```nginx
 rewrite ^/uploads/images/(.*)$ /uploads/$1 last;
@@ -89,7 +92,8 @@ rewrite ^/uploads/images/(.*)$ /uploads/$1 last;
 
 当一些原因导致图片无法访问，可以临时使用一张默认图片作为展示。
 
-比如文章封面或文章内容图，`https://mysite.com/storage/uploads/images/xx.png` 或者 `https://mysite.com/storage/posts/cover/images/xx.png` 无法访问，当出现上面的图片地址无法访问时展示一张默认的图片。
+比如文章封面或文章内容图，`https://mysite.com/storage/uploads/images/xx.png`
+或者 `https://mysite.com/storage/posts/cover/images/xx.png` 无法访问，当出现上面的图片地址无法访问时展示一张默认的图片。
 
 可以使用 nginx 提供的 [`try_files` 指令](http://nginx.org/en/docs/http/ngx_http_core_module.html#try_files)
 
@@ -105,3 +109,30 @@ location = /images/default.jpg {
     expires max;
 }
 ```
+
+## 允许部分IP访问，其它IP则301跳转
+
+在站点需要跳转到其它站点时，Nginx可以指定部分IP不跳转，可以通过下面的配置实现：
+
+:::code-group
+
+```nginx 单个IP
+# 当 IP 不等于 `127.0.0.1` 时就跳转到其它域名
+location / {
+    if ($remote_addr !~ 127.0.0.1) {
+        return 301 https://redirect_domain;
+    }
+}
+```
+
+```nginx 多个IP
+# 当 IP 不等于 `127.0.0.1` 或 `192.168.1.1` 时就跳转到其它域名
+location / {
+    if ($remote_addr !~ (127.0.0.1|192.168.1.1)) {
+        return 301 https://redirect_domain;
+    }
+}
+```
+:::
+
+> `$remote_addr` 指的是客户端的 IP 地址，如果上层使用了负载均衡可以尝试获取 `$http_x_forwarded_for` 的值 
