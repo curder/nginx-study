@@ -116,7 +116,7 @@ location = /images/default.jpg {
 
 :::code-group
 
-```nginx 单个IP
+```nginx [单个IP]
 # 当 IP 不等于 `127.0.0.1` 时就跳转到其它域名
 location / {
     if ($remote_addr !~ 127.0.0.1) {
@@ -125,7 +125,7 @@ location / {
 }
 ```
 
-```nginx 多个IP
+```nginx [多个IP]
 # 当 IP 不等于 `127.0.0.1` 或 `192.168.1.1` 时就跳转到其它域名
 location / {
     if ($remote_addr !~ (127.0.0.1|192.168.1.1)) {
