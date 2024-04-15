@@ -137,7 +137,7 @@ location / {
 
 > `$remote_addr` 指的是客户端的 IP 地址，如果上层使用了负载均衡可以尝试获取 `$http_x_forwarded_for` 的值 
 
-## 对域名添加用户名和密码HTTP验证
+## 添加用户名和密码HTTP验证
 
 在 Nginx 设置 HTTP 认证需要使用 [httpasswd](https://httpd.apache.org/docs/2.4/programs/htpasswd.html) 来创建和生成加密的用户用于基础认证。
 
