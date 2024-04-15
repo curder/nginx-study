@@ -136,3 +136,57 @@ location / {
 :::
 
 > `$remote_addr` 指的是客户端的 IP 地址，如果上层使用了负载均衡可以尝试获取 `$http_x_forwarded_for` 的值 
+
+## 对域名添加用户名和密码HTTP验证
+
+在 Nginx 设置 HTTP 认证需要使用 [httpasswd](https://httpd.apache.org/docs/2.4/programs/htpasswd.html) 来创建和生成加密的用户用于基础认证。
+
+1. 下载工具
+
+    生成对应的用户名和密码信息前需要先下载 httpasswd 工具，针对不同的操作系统下载的软件包不同。
+   
+    ```bash
+    sudo yum -y install httpd-tools # CentOS
+
+    sudo apt-get install apache2-utils # Ubuntu
+    ```
+2. 创建用户名和密码
+   在 nginx 提供服务的网站目录下创建一个 `.htpasswd` 文件。以下命令将创建该文件并向其中添加用户和加密密码。
+
+    ```bash
+    sudo htpasswd -c /etc/nginx/.htpasswd exampleuser
+    ```
+
+   运行命令后会提示输入密码 `New password: Re-type new password: Adding password for user exampleuser`。
+
+   htpasswd 文件的结构如下：
+
+   ```text
+   exampleuser:hased-passwd
+   ```
+ 
+   > 请注意，运行 Nginx 的用户需要对生成的文件拥有可读权限。
+
+3. 更新 Nginx 配置
+
+   在网站配置文件中的 `Server` 段添加下面两行：
+
+   ```txt
+   server {
+      auth_basic "Restricted";
+      auth_basic_user_file /etc/nginx/.htpasswd;
+      # ...
+   }
+   ```
+
+4. 重载 Nginx
+
+   ```bash
+   nginx -s reload
+   ```
+
+
+现在尝试访问网站或已保护的域路径，可以看到浏览器提示要求输入登录名和密码。
+
+此时输入在创建 `.htpasswd` 文件时提供的用户名和密码信息，并且在入正确的凭据之前，提示不允许访问该网站。
+
