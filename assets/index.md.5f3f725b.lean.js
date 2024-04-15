@@ -1,1 +1,0 @@
-import{_ as e,c as a,o as t,N as i}from"./chunks/framework.c52bb558.js";const m=JSON.parse('{"title":"Nginx 学习","description":"","frontmatter":{},"headers":[],"relativePath":"index.md","lastUpdated":1675073293000}'),n={name:"index.md"},l=i("",2),o=[l];function r(s,_,d,c,u,h){return t(),a("div",null,o)}const x=e(n,[["render",r]]);export{m as __pageData,x as default};
