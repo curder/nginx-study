@@ -190,3 +190,15 @@ location / {
 
 此时输入在创建 `.htpasswd` 文件时提供的用户名和密码信息，并且在入正确的凭据之前，提示不允许访问该网站。
 
+## 多个域名跨域支持
+
+比如当前域名支持 `sub1.domain.com` 和 `sub2.domain.com` 的跨域请求支持，可以在 Nginx 配置文件中通过匹配 `$http_origin` 的值给定：
+
+```
+# 允许代理域名访问当前域名下的静态资源的跨域支持
+location / {
+    if ($http_origin ~* (https?://(?:.+\.)?(sub1\.domain\.com|sub2\.domain\.com)$)) {
+        add_header 'Access-Control-Allow-Origin' '$http_origin';
+    }
+}
+```
