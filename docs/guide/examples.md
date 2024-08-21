@@ -1,5 +1,17 @@
 # 一些示例
 
+## 添加1个像素的gif图
+
+Nginx 提供一个模块，叫做 [`ngx_http_empty_gif_module`](http://nginx.org/en/docs/http/ngx_http_empty_gif_module.html)，用于生成一个 `1x1` 像素的透明 GIF 图片。
+
+这个模块已经内置在标准的 Nginx 发行版中，所以不需要额外安装任何东西。只需要在 Nginx 配置文件中定义一个 `location` 来使用这个模块。
+
+```nginx
+location = /assets/images/common/1.gif {
+    empty_gif;
+}
+```
+
 ## 添加或删除 `www` 子域名
 
 ::: code-group
