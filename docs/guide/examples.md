@@ -198,9 +198,84 @@ location / {
    ```
 
 
-现在尝试访问网站或已保护的域路径，可以看到浏览器提示要求输入登录名和密码。
+   现在尝试访问网站或已保护的域路径，可以看到浏览器提示要求输入登录名和密码。
 
-此时输入在创建 `.htpasswd` 文件时提供的用户名和密码信息，并且在入正确的凭据之前，提示不允许访问该网站。
+   此时输入在创建 `.htpasswd` 文件时提供的用户名和密码信息，并且在入正确的凭据之前，提示不允许访问该网站。
+
+5. 其他配置
+
+
+::: code-group
+
+```nginx [对特定路径进行认证保护]
+server {
+    listen 80;
+    server_name example.com;
+
+    # 默认不需要认证
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+    }
+
+    # 对 /admin 路径进行密码保护
+    location /admin {
+        auth_basic "Restricted Admin Area";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+        root /usr/share/nginx/html;
+        index index.html;
+    }
+
+    # 对特定文件类型进行保护
+    location ~ \.php$ {
+        auth_basic "Restricted PHP Files";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+        fastcgi_pass unix:/var/run/php-fpm.sock;
+        include fastcgi_params;
+    }
+
+    # 保护多个目录
+    location ~ ^/(admin|private|secure) {
+        auth_basic "Restricted Area";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+        root /usr/share/nginx/html;
+        index index.html;
+    }
+}
+```
+
+```nginx [使用条件判断]
+location /api {
+    # 只对 POST 请求进行认证
+    if ($request_method = POST) {
+        set $auth_basic "Restricted";
+    }
+    if ($request_method != POST) {
+        set $auth_basic off;
+    }
+    auth_basic $auth_basic;
+    auth_basic_user_file /etc/nginx/.htpasswd;
+}
+```
+
+```nginx [排除特定路径]
+location /admin {
+    auth_basic "Restricted Admin Area";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+
+    # 排除特定文件，不需要认证
+    location = /admin/public.html {
+        auth_basic off;
+    }
+
+    # 排除特定目录，不需要认证
+    location ^~ /admin/public/ {
+        auth_basic off;
+    }
+}
+```
+:::
+
 
 ## 多个域名跨域支持
 
